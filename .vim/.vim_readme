@@ -1,0 +1,9 @@
+<F3> <F4>
+
+easy motion:
+ <leader> f <char>
+ <leader> w <word>
+
+:BundleInstall
+:so ~/.vimrc
+:BundleInstall!     upgrade plugins

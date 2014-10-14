@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SHELL=/bin/sh
+PATH=/bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin
+HOME=/var/log
+
+#minute hourly daily monthly weekly     CMD
+
+10      12      *       *       1,3     sh brew update;sh brew upgrade;osascript -e 'display alert "we have done brew update [crontab notify]"'
+*       *       *       *       5       osascript -e 'display alert "G0 B4ck Up W1th T1meM4ch1ne!!!"'
+
