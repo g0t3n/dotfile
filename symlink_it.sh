@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-#
-# "borrowed" from Jonathan Palardy (http://github.com/jpalardy/etc_config/tree/master)
+# "borrowed" some code Fr0m Jonathan Palardy (http://github.com/jpalardy/etc_config/tree/master)
+# Author : g0t3n
+# CreateDate : 5/1/2015
+# comment : 寂寞的5.1 居然在码代码
 
-relink_array=( .gdbinit .git .htoprc .vim .vimrc gitignore-sample .pip )
-pip_install_array=(mitmproxy)
 
+DIR_TO_PROCESS=( .pip .ssh .vim )
+FILE_TO_PROCESS=( .gdbinit .gitignore-sample .htoprc .vimrc )
 # Set the colours you can use
 black='\033[0;30m'
 white='\033[0;37m'
@@ -20,25 +22,34 @@ cyan='\033[0;36m'
 alias Reset="tput sgr0"
  
 # Color-echo.
-# arg $1 = message
-# arg $2 = Color
+# arg $1 = message   arg $2 = Color
 cecho() {
   echo "${2}${1}"
   Reset # Reset to normal.
   return
 }
 
-function relink() {
-  rm -i $1
-  ln -sn $2 $1
-}
-
-# relink all dotfile
-for k in relink_array
-do
-    relink $k ~/$k
+reset
+# Starting move file
+for tmp_dir in ${DIR_TO_PROCESS[@]};
+do if [ -d ${HOME}/$tmp_dir ];
+then
+    mv ${HOME}/${tmp_dir} ${HOME}/${tmp_dir}-before;
+    echo "moving existing ${HOME}/${tmp_dir} to ${HOME}/${tmp_dir}-before"; 
+fi;
+echo "[+] Doing ln -s $(pwd)/${tmp_dir} ${HOME}/${tmp_dir}"
+ln -s $(pwd)/${tmp_dir} ${HOME}/${tmp_dir};
 done
 
+for tmp_file in ${FILE_TO_PROCESS[@]};
+do if [ -f ${HOME}/${tmp_file} ];
+then 
+    mv ${HOME}/${tmp_file} ${HOME}/${tmp_file}-before;
+    echo "moving existing ${HOME}/${tmp_file} to ${HOME}/${tmp_file}-before"; 
+fi; 
+echo "[+] Doing ln -s $(pwd)/${tmp_file} ${HOME}/${tmp_file}"
+ln -s $(pwd)/${tmp_file} ${HOME}/${tmp_file};
+done
 
 # Ask for the administrator password upfront
 sudo -v
@@ -48,7 +59,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
  
 echo ""
 cecho "##############################################" $white
-cecho "#  This script will make your  Mac awesome." $white
+cecho "#  This script will make your  *nix Pretty ;-)." $white
 cecho "#   Follow the prompts and you'll be fine." $white
 cecho "#" $white
 cecho "#            ~ Happy Hacking ~" $white
@@ -89,16 +100,16 @@ case $response in
     brew doctor
     brew update
     brew install bash coreutils curl findutils heroku-toolbelt httpie imagemagick launchrocket \
-      mongodb node python rabbitmq ssh-copy-id wget
+      node python rabbitmq ssh-copy-id wget
 
-    cecho "Initializing and loading LaunchControl services from previously installed utilities" $blue
-    ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
-    ln -sfv /usr/local/opt/rabbitmq/*.plist ~/Library/LaunchAgents
-    ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgentsauth
+    # cecho "Initializing and loading LaunchControl services from previously installed utilities" $blue
+    # ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+    # ln -sfv /usr/local/opt/rabbitmq/*.plist ~/Library/LaunchAgents
+   #  ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgentsauth
 
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.rabbitmq.plist
-    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
+ #    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+    # launchctl load ~/Library/LaunchAgents/homebrew.mxcl.rabbitmq.plist
+    # launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
 
     cecho "Installing pip and some python packages" $blue
     sudo easy_install pip
@@ -116,22 +127,27 @@ case $response in
     brew tap caskroom/versions
     brew install brew-cask
 
-    echo 'Installing items not installed here (most likely from App store, or other sources):'
-    echo '- Airmail (app store)'
-    echo '- Instashare (app store)'
-    echo '- Tweetdeck (app store)'
-    echo '- XCode (app store)'
-    echo '- '
-    echo 'Installing apps'
-    brew cask install \
-      air-video-server-hd airserver airdisplay alfred android-studio appcleaner atom \
-      cakebrew cinch daisydisk dropbox evernote \
-      firefox firefox-aurora flux google-chrome google-chrome-canary iterm2 istat-menus \
-      licecap mou onepassword postgres steam send-to-kindle \
-      skype sublime-text3 transmission vlc virtualbox
+#     echo 'Installing items not installed here (most likely from App store, or other sources):'
+    # echo '- Airmail (app store)'
+    # echo '- Instashare (app store)'
+    # echo '- Tweetdeck (app store)'
+    # echo '- XCode (app store)'
+    # echo '- '
+    # echo 'Installing apps'
+    # brew cask install \
+      # air-video-server-hd airserver airdisplay alfred android-studio appcleaner atom \
+      # cakebrew cinch daisydisk dropbox evernote \
+      # firefox firefox-aurora flux google-chrome google-chrome-canary iterm2 istat-menus \
+      # licecap mou onepassword postgres steam send-to-kindle \
+      # skype sublime-text3 transmission vlc virtualbox
 
     brew cask cleanup
     ;;
   *)
     ;;
 esac
+
+
+# finally
+# both linux&osx have reset
+reset
